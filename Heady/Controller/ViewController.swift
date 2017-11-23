@@ -56,7 +56,6 @@ class ViewController: UICollectionViewController {
     
     func searchMovieAPICall(query : String){
         isSearchListActive      = true
-        currentPage             = 1
         let searchMovieAPICall  = SearchMovieAPI()
         searchMovieAPICall.makeAPICall(fromViewController: self, page: "\(currentPage)", query: query)
     }
@@ -72,7 +71,6 @@ class ViewController: UICollectionViewController {
     }
     
     func searchMovieAPIResponse(dic : Any){
-        genereMovieList.removeAll()
         var error: NSError?
         let genereParser    = MovieListParser()
         let movieList       = genereParser.parseList(data: dic, error: &error)
@@ -132,9 +130,11 @@ extension ViewController : UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
      
         if(textField.text! != ""){
+            genereMovieList.removeAll()
             searchMovieAPICall(query: textField.text!)
             searchQuery     = textField.text!
             textField.text  = nil
+            currentPage     = 1
             textField.resignFirstResponder()
         }else{
             UiUtillity.shared.showAlert(title: "Error", message: "Please Enter Text To Search", logMessage: "Search Text Blank", fromController: self)
